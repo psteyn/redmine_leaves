@@ -323,7 +323,10 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
 
     else
       @user_time_check = checkout_timechecks.first
-      @user_time_check.update_attributes(check_out_time: DateTime.now)
+      @check_out_time = DateTime.now
+      @elapsed_seconds = ((@check_out_time -  DateTime.parse(@user_time_check.check_in_time.to_s)) * 24 * 60 * 60).to_i
+      
+      @user_time_check.update_attributes(:check_out_time => @check_out_time,:time_spent => @elapsed_seconds)
       
       
       @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
