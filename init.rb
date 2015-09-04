@@ -27,7 +27,7 @@ Redmine::Plugin.register :redmine_leaves do
     menu :top_menu, :time_check_out, { controller: 'user_time_checks', action: 'check_out' }, 
       caption: :caption_top_menu_check_out, if: Proc.new {UserTimeCheck.checked_in?(User.current.id)}, last: true
   
-      menu :top_menu, :user_leave_reports, { controller: 'user_leave_reports', action: 'index' }, caption: :caption_leave_report
+    #  menu :top_menu, :user_leave_reports, { controller: 'user_leave_reports', action: 'index' }, caption: :caption_leave_report
   
       menu :top_menu, :user_time_checks, { controller: 'user_time_checks', action: 'index' }, caption: :caption_user_time_check
       
@@ -36,7 +36,8 @@ Redmine::Plugin.register :redmine_leaves do
       menu :user_time_report_menu, :user_time_report_weekly, { :controller => 'user_time_checks', :action => 'user_time_reporting_weekly'}, :caption => 'Weekly'
       menu :user_time_report_menu, :user_time_report_monthly, { :controller => 'user_time_checks', :action => 'user_time_reporting_monthly'}, :caption => 'Monthly'
       
-      menu :top_menu, :user_time_activity_report, { controller: 'user_time_checks', action: 'user_time_activity_report' }, :caption => 'User Time-Activity Report'
+      menu :top_menu, :daily_time_report, { controller: 'user_time_checks', action: 'daily_time_report' }, :caption => 'Daily Time Report'
+    #  menu :top_menu, :user_time_activity_report, { controller: 'user_time_checks', action: 'user_time_activity_report' }, :caption => 'User Time-Activity Report'
           menu :user_time_analytics_menu, :user_time_activity_report_custom, { :controller => 'user_time_checks', :action => 'user_time_activity_report'}, :caption => 'All Time'
       menu :user_time_analytics_menu, :user_time_activity_report_monthly, { :controller => 'user_time_checks', :action => 'user_time_activity_report_monthly'}, :caption => 'Monthly'
 #  

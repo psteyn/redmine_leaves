@@ -3,7 +3,7 @@
 <table>
   <tr align="left" class="<%= cycle("odd")%>" >
     <th><strong><%= l(:label_check_in_time)%>:</strong></th>
-    <td><%= Time.at(@user_time_check.check_in_time.to_i).getlocal("+02:00").strftime("%H:%M:%S")  %></td>
+    <td><%= Time.at(@user_time_check.check_in_time.to_i).getlocal.strftime("%H:%M:%S")  %></td>
   </tr>
   <tr align="left" class="<%= cycle("even")%>">
     <th><strong><%= l(:label_current_user_id) %></strong></th>
