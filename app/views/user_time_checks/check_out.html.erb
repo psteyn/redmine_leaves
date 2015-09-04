@@ -8,10 +8,10 @@
 
     <% logger.debug "#{'*'*100}\nIssue populated at controller <Test> #{@assigned_issues}\n#{'*'*100}"%> 
     <% time_difference = @user_time_check.check_out_time - @user_time_check.check_in_time %>
+    <% logged_hours=@time_entries.sum(:hours)%>
     <p><b><%= l(:label_total_checked_time_is)%> | <%= @checked_today_hours.strftime("%H:%M:%S")%> </b> | <%= l(:label_hours_for_today)%> </p>
 
-    <% logged_hours=@time_entries.sum(:hours)%>
-    <p><b> <%= l(:label_total_logged_time_is)%> | <%= Time.at(logged_hours*3600).utc.strftime("%H:%M:%S")%>  </b> | <%= l(:label_hours_for_today)%> </p>
+    <p><b> <%= l(:label_total_logged_time_is)%> | <%= @logged_today_hours.strftime("%H:%M:%S")%>  </b> | <%= l(:label_hours_for_today)%> </p>
 
    <!-- <p><b><%= l(:label_total_checked_time_is)%> | <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%> </b> | <%= l(:label_hours_for_session)%>  </p> -->
 
