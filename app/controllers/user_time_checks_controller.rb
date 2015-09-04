@@ -315,15 +315,8 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
   end
   
   def check_out
+    
     checkout_timechecks = UserTimeCheck.where(['user_id = ? AND check_out_time IS NULL', User.current.id])
-    checked_today = UserTimeCheck.select("sum(time_spent) as time_spent").where(['user_id = ? and check_out_time >= CURDATE()', User.current.id]).first
-   
-    @checked_today_hours = Time.new(2015) + checked_today.time_spent 
-    
-    @time_spent_today = TimeEntry.where(['user_id = ? and created_on >= CURDATE()', User.current.id]).sum(:hours)
-    @logged_today_hours = Time.new(2015) + @time_spent_today * 60 * 60
-
-    
     if checkout_timechecks.empty?
       flash.now[:error] = l(:error_checkin_first)
       @user_time_check = UserTimeCheck.new(:user_id => User.current.id)
@@ -334,6 +327,17 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
       @elapsed_seconds = ((@check_out_time -  DateTime.parse(@user_time_check.check_in_time.to_s)) * 24 * 60 * 60).to_i
       
       @user_time_check.update_attributes(:check_out_time => @check_out_time,:time_spent => @elapsed_seconds)
+    checked_today = UserTimeCheck.select("sum(time_spent) as time_spent").where(['user_id = ? and check_out_time >= CURDATE()', User.current.id]).first
+
+   
+    @checked_today_hours = Time.new(2015) + checked_today.time_spent 
+    
+    @time_spent_today = TimeEntry.where(['user_id = ? and created_on >= CURDATE()', User.current.id]).sum(:hours)
+    if @time_spent_today.nil? then
+      @logged_today_hours = Time.new(2015)
+    else
+      @logged_today_hours = Time.new(2015) + @time_spent_today * 60 * 60
+    end
       
       
       @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
