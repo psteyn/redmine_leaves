@@ -7,11 +7,16 @@ class UserTimeChecksController < ApplicationController
   helper :sort
   
   def index
+
+
+#SELECT user_time_checks.*,sum(time_entries.hours ) as logged_hours FROM `user_time_checks` LEFT JOIN time_entries on user_time_checks.user_id = time_entries.user_id WHERE DATE(check_in_time) <= spent_on AND DATE(check_out_time) >= spent_on GROUP BY user_time_checks.user_id,user_time_checks.id;
   
     time_checks= UserTimeCheck.
       select("#{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours").
-      joins("LEFT JOIN #{TimeEntry.table_name} on DATE(check_in_time) <= spent_on AND DATE(check_out_time) >= spent_on").
-      group("#{UserTimeCheck.table_name}.id")
+      joins("LEFT JOIN #{TimeEntry.table_name} on #{TimeEntry.table_name}.user_id = #{UserTimeCheck.table_name}.user_id").
+      where("DATE(check_in_time) <= spent_on AND DATE(check_out_time) >= spent_on").
+      group("#{UserTimeCheck.table_name}.user_id,#{UserTimeCheck.table_name}.id")
+ logger.debug("\nDebug time_checks: #{time_checks.inspect}\n")
     @time_check_grid = initialize_grid(time_checks,
       :name => 'time_checks_grid',
       conditions: ["check_in_time >  ?", Time.now - 6.months],
