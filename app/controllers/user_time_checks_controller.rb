@@ -201,9 +201,28 @@ and month(#{TimeEntry.table_name}.spent_on)=?
 
   end
  
+  def daily_time_report
 
- 
-
+    time_checks = UserTimeCheck.select("user_id, check_in_time,check_out_time, 
+AVG(check_in_time) as avg_check_in_time,
+ AVG(check_out_time) as avg_check_out_time, 
+avg(time_spent) as average_time")
+    .includes(:user)
+    .group('user_id')
+    .where("check_out_time IS NOT NULL")#
+    
+    @time_report_grid = initialize_grid(time_checks,
+      :name => 'time_checks_grid',
+      conditions: ["check_in_time >  ?", Time.now - 6.months],
+      :enable_export_to_csv => true,
+      :csv_field_separator => ';',
+      :csv_file_name => 'UserTimeCustom')#,
+     
+    export_grid_if_requested('time_checks_grid' => 'time_report_grid')
+      
+    
+  end
+  
   def user_time_reporting
 
     time_checks = UserTimeCheck.select("user_id, check_in_time,check_out_time, 
