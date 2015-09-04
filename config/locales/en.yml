@@ -116,6 +116,7 @@ en:
    label_total_checked_time_is: "Your Total Checked Time is"
    label_total_logged_time_is: "Your Total Logged Time is"
    label_hours_for_today: "Hours For Today"
+   label_hours_for_session: "Hours For Session"
    label_please_log_remaining: "Please Log Remaining"
    
    

@@ -316,6 +316,10 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
   
   def check_out
     checkout_timechecks = UserTimeCheck.where(['user_id = ? AND check_out_time IS NULL', User.current.id])
+    checked_today = UserTimeCheck.select("sum(time_spent) as time_spent").where(['user_id = ? and check_out_time >= CURDATE()', User.current.id]).first
+   
+    @checked_today_hours = Time.new(2015) + checked_today.time_spent 
+
     
     if checkout_timechecks.empty?
       flash.now[:error] = l(:error_checkin_first)
