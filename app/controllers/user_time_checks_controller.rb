@@ -354,7 +354,12 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
     checked_today = UserTimeCheck.select("sum(time_spent) as time_spent").where(['user_id = ? and check_out_time >= CURDATE()', User.current.id]).first
 
    
-    @checked_today_hours = Time.new(2015) + checked_today.time_spent 
+    if checked_today.time_spent.nil? then
+      @checked_today_hours = Time.new(2015)
+    else
+      @checked_today_hours = Time.new(2015) + checked_today.time_spent 
+    end
+ 
     
     @time_spent_today = TimeEntry.where(['user_id = ? and created_on >= CURDATE()', User.current.id]).sum(:hours)
     if @time_spent_today.nil? then
