@@ -203,14 +203,35 @@ and month(#{TimeEntry.table_name}.spent_on)=?
  
   def daily_time_report
 
-    time_checks = UserTimeCheck.select("user_id, check_in_time,check_out_time, 
-AVG(check_in_time) as avg_check_in_time,
- AVG(check_out_time) as avg_check_out_time, 
-avg(time_spent) as average_time")
-    .includes(:user)
-    .group('user_id')
-    .where("check_out_time IS NOT NULL")#
+    time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as utc.user_id").where("check_out_time >= CURDATE()").includes(:user).group('user_id')
+
+    @time_report_grid = initialize_grid(time_checks,
+      :name => 'time_checks_grid',
+      conditions: ["check_in_time >  ?", Time.now - 6.months],
+      :enable_export_to_csv => true,
+      :csv_field_separator => ';',
+      :csv_file_name => 'UserTimeCustom')#,
+     
+    export_grid_if_requested('time_checks_grid' => 'time_report_grid')
+
+  end
+      
     
+  
+  def daily_time_reporting_weekly
+
+    #time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as utc.user_id").where("check_out_time >= CURDATE()").includes(:user).group('user_id')
+    #logger.debug("\nDEBUGTWO#{time_checks.inspect}\n");
+    time_checks = UserTimeCheck.select("check_in_time as weekdays,week(check_in_time) as week,year(check_in_time) as year,check_in_time,
+check_out_time ,user_id,
+ AVG(check_in_time) as avg_check_in_time,
+ AVG(check_out_time) as avg_check_out_time, 
+ sum(time_spent) as time_spent,avg(time_spent) as average_time").
+      includes(:user).
+      group('user_id,year(check_in_time),week(check_in_time)').        
+      order('year(check_in_time),week(check_in_time)')#.includes(:user)
+   
+
     @time_report_grid = initialize_grid(time_checks,
       :name => 'time_checks_grid',
       conditions: ["check_in_time >  ?", Time.now - 6.months],
@@ -222,6 +243,7 @@ avg(time_spent) as average_time")
       
     
   end
+  
   
   def user_time_reporting
 
@@ -355,17 +377,17 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
 
    
     if checked_today.time_spent.nil? then
-      @checked_today_hours = Time.new(2015)
+      @checked_today_hours = Time.new(Time.now.year)
     else
-      @checked_today_hours = Time.new(2015) + checked_today.time_spent 
+      @checked_today_hours = Time.new(Time.now.year) + checked_today.time_spent 
     end
  
     
     @time_spent_today = TimeEntry.where(['user_id = ? and created_on >= CURDATE()', User.current.id]).sum(:hours)
     if @time_spent_today.nil? then
-      @logged_today_hours = Time.new(2015)
+      @logged_today_hours = Time.new(Time.now.year)
     else
-      @logged_today_hours = Time.new(2015) + @time_spent_today * 60 * 60
+      @logged_today_hours = Time.new(Time.now.year) + @time_spent_today * 60 * 60
     end
       
       

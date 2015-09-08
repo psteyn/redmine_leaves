@@ -31,7 +31,7 @@ Redmine::Plugin.register :redmine_leaves do
   
       menu :top_menu, :user_time_checks, { controller: 'user_time_checks', action: 'index' }, caption: :caption_user_time_check
       
-      menu :top_menu, :user_time_reporting, { controller: 'user_time_checks', action: 'user_time_reporting' }, :caption => 'User Time Reports'
+#      menu :top_menu, :user_time_reporting, { controller: 'user_time_checks', action: 'user_time_reporting' }, :caption => 'User Time Reports'
       menu :user_time_report_menu, :user_time_report_custom, { :controller => 'user_time_checks', :action => 'user_time_reporting'}, :caption => 'Custom'
       menu :user_time_report_menu, :user_time_report_weekly, { :controller => 'user_time_checks', :action => 'user_time_reporting_weekly'}, :caption => 'Weekly'
       menu :user_time_report_menu, :user_time_report_monthly, { :controller => 'user_time_checks', :action => 'user_time_reporting_monthly'}, :caption => 'Monthly'
