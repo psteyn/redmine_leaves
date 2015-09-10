@@ -203,7 +203,7 @@ and month(#{TimeEntry.table_name}.spent_on)=?
  
   def daily_time_report
 
-    time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as utc.user_id").where("check_out_time >= CURDATE()").includes(:user).group('user_id')
+    time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as user_id").where("date(check_in_time) = date(CURDATE())").includes(:user).group('user_id')
 
     @time_report_grid = initialize_grid(time_checks,
       :name => 'time_checks_grid',
@@ -220,8 +220,6 @@ and month(#{TimeEntry.table_name}.spent_on)=?
   
   def daily_time_reporting_weekly
 
-    #time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as utc.user_id").where("check_out_time >= CURDATE()").includes(:user).group('user_id')
-    #logger.debug("\nDEBUGTWO#{time_checks.inspect}\n");
     time_checks = UserTimeCheck.select("check_in_time as weekdays,week(check_in_time) as week,year(check_in_time) as year,check_in_time,
 check_out_time ,user_id,
  AVG(check_in_time) as avg_check_in_time,
