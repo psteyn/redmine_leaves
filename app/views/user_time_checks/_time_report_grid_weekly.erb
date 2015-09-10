@@ -17,15 +17,6 @@
     time.strftime("%F")
     end
 
-
-  e.column name: 'Year', html: {style: 'text-align: center'} do |t|
-    #t.week
-    # Time.at(t.year).year
-    t.year
-    end
-
-
-
   e.column name: l(:field_user_id), html: {style: 'text-align: center'}, 
     :attribute => 'user_id',
     detach_with_id: 'user_filter' ,
@@ -34,31 +25,14 @@
     end
 
 
-  e.column name: 'Average Clock-in', html: {style: 'text-align: center'} do |t|
-    unless t.avg_check_in_time.nil?
-      time=Time.at(t.avg_check_in_time)
-      t= time.in_time_zone
-      t.to_formatted_s(:time) 
+  e.column name: 'Time Checked', html: {style: 'text-align: center'}   do |t|
+    unless t.time_spent.nil?
+      time_spent_date = Time.new(Time.now.year) + t.time_spent
+      time_spent_date.strftime("%H:%M:%S")
     end
-    end
-
-  e.column name: 'Average Clock-out', html: {style: 'text-align: center'} do |t|
-    unless t.avg_check_out_time.nil?
-      time=Time.at(t.avg_check_out_time)
-      t= time.in_time_zone
-      t.to_formatted_s(:time) 
-    end
-    end
-
-  e.column name: l(:field_check_in_time), html: {style: 'text-align: center' }, 
-    :attribute => 'check_in_time'  , detach_with_id: 'check_in_time_filter' 
-
-  e.column name: l(:field_check_out_time), html: {style: 'text-align: center'}, 
-    :attribute => 'check_out_time', detach_with_id: 'check_out_time_filter' 
-
-
-
-  e.column name: 'Average Time Spent', html: {style: 'text-align: center'}, 
+  end
+  
+  e.column name: 'Total Time Logged', html: {style: 'text-align: center'}, 
     :attribute => 'comments',#filter_type: :range,
   filter: false do |t|
     unless t.average_time.nil?
@@ -66,8 +40,6 @@
       output=(t.average_time.to_i/60).to_s
 
       output+':'+(t.average_time.to_i%60).to_s
-
-
     end
 
   end
