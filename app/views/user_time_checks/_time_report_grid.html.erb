@@ -35,7 +35,7 @@
    logger.debug("\nMOO: #{@time_spent_today}\n")
     unless t.time_spent.nil?
       #time_spent_date = Time.new(Time.now.year) +  @time_spent_today * 60 * 60
-      @time_spent_today
+      @time_spent_today.round(2)
       #time_spent_date.strftime("%H:%M:%S") 
     end
   end
