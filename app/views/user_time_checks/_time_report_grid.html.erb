@@ -30,8 +30,18 @@
   end
   
   e.column name: 'Time Logged', html: {style: 'text-align: center'}   do |t|
+
+  if params["time_checks_grid"].nil?
+    @time_spent_today = TimeEntry.where(['user_id = ? and date(created_on) = date(CURDATE())', t.user_id]).sum(:hours)
+  else
+    @time_spent_today = TimeEntry.where(['user_id = ? and created_on between ? and ?', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
+  end
+
+
+
+
   @time_spent_today = TimeEntry.where(['user_id = ? and created_on between ? and ?', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
-   logger.debug("\nMOO: #{t.inspect}\n")
+   logger.debug("\nMOO: #{params.inspect}\n")
    logger.debug("\nMOO: #{@time_spent_today}\n")
     unless t.time_spent.nil?
       #time_spent_date = Time.new(Time.now.year) +  @time_spent_today * 60 * 60
