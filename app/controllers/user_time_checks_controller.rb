@@ -201,33 +201,28 @@ and month(#{TimeEntry.table_name}.spent_on)=?
 
   end
  
-  def daily_time_report
+  def user_time_reporting
 
-    time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as user_id").where("date(check_in_time) = date(CURDATE())").includes(:user).group('user_id')
+    logger.debug("\nCHECK_IN_TIME : #{params.inspect}\n")
 
-    @time_report_grid = initialize_grid(time_checks,
-      :name => 'time_checks_grid',
-      conditions: ["check_in_time >  ?", Time.now - 6.months],
-      :enable_export_to_csv => true,
-      :csv_field_separator => ';',
-      :csv_file_name => 'UserTimeCustom')#,
-     
-    export_grid_if_requested('time_checks_grid' => 'time_report_grid')
+#2.2.2 :002 > b = {"time_checks_grid"=>{"f"=>{"check_in_time"=>{"fr"=>"2015-09-09", "to"=>"2015-09-09"}, "check_out_time"=>{"fr"=>"2015-09-03"}}}, "controller"=>"user_time_checks", "action"=>"daily_time_report"}
+# => {"time_checks_grid"=>{"f"=>{"check_in_time"=>{"fr"=>"2015-09-09", "to"=>"2015-09-09"}, "check_out_time"=>{"fr"=>"2015-09-03"}}}, "controller"=>"user_time_checks", "action"=>"daily_time_report"} 
+#2.2.2 :003 > b["time_checks_grid"]["f"]
+# => {"check_in_time"=>{"fr"=>"2015-09-09", "to"=>"2015-09-09"}, "check_out_time"=>{"fr"=>"2015-09-03"}} 
+#2.2.2 :004 > b["time_checks_grid"]["f"]["check_in_time"]
+# => {"fr"=>"2015-09-09", "to"=>"2015-09-09"} 
+#2.2.2 :005 > b["time_checks_grid"]["f"]["check_in_time"]["fr"]
+# => "2015-09-09" 
+#2.2.2 :006 > b["time_checks_grid"]["f"]["check_out_time"]["fr"]
+# => "2015-09-03" 
 
-  end
+    #if params["time_checks_grid"]["f"]["check_in_time"]["fr"].nil?
+    if params["time_checks_grid"].nil?
+      time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as user_id").where("date(check_in_time) = date(CURDATE())").includes(:user).group('user_id')
+    else
+      time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as user_id").where("date(check_in_time) = date(#{params['time_checks_grid']['f']['check_in_time']['fr']})").includes(:user).group('user_id')
+    end
       
-    
-  
-  def daily_time_reporting_weekly
-
-    time_checks = UserTimeCheck.select("check_in_time as weekdays,week(check_in_time) as week,year(check_in_time) as year,check_in_time,
-check_out_time ,user_id,
- AVG(check_in_time) as avg_check_in_time,
- AVG(check_out_time) as avg_check_out_time, 
- sum(time_spent) as time_spent,avg(time_spent) as average_time").
-      includes(:user).
-      group('user_id,year(check_in_time),week(check_in_time)').        
-      order('year(check_in_time),week(check_in_time)')#.includes(:user)
    
 
     @time_report_grid = initialize_grid(time_checks,
@@ -238,32 +233,31 @@ check_out_time ,user_id,
       :csv_file_name => 'UserTimeCustom')#,
      
     export_grid_if_requested('time_checks_grid' => 'time_report_grid')
-      
-    
-  end
-  
-  
-  def user_time_reporting
 
-    time_checks = UserTimeCheck.select("user_id, check_in_time,check_out_time, 
-AVG(check_in_time) as avg_check_in_time,
- AVG(check_out_time) as avg_check_out_time, 
-avg(time_spent) as average_time")
-    .includes(:user)
-    .group('user_id')
-    .where("check_out_time IS NOT NULL")#
-    
-    @time_report_grid = initialize_grid(time_checks,
-      :name => 'time_checks_grid',
-      conditions: ["check_in_time >  ?", Time.now - 6.months],
-      :enable_export_to_csv => true,
-      :csv_field_separator => ';',
-      :csv_file_name => 'UserTimeCustom')#,
-     
-    export_grid_if_requested('time_checks_grid' => 'time_report_grid')
+  end
       
     
-  end
+  #def user_time_reporting
+#
+#    time_checks = UserTimeCheck.select("user_id, check_in_time,check_out_time, 
+#AVG(check_in_time) as avg_check_in_time,
+# AVG(check_out_time) as avg_check_out_time, 
+#avg(time_spent) as average_time")
+#    .includes(:user)
+#    .group('user_id')
+#    .where("check_out_time IS NOT NULL")#
+#    
+#    @time_report_grid = initialize_grid(time_checks,
+#      :name => 'time_checks_grid',
+#      conditions: ["check_in_time >  ?", Time.now - 6.months],
+#      :enable_export_to_csv => true,
+#      :csv_field_separator => ';',
+#      :csv_file_name => 'UserTimeCustom')#,
+#     
+#    export_grid_if_requested('time_checks_grid' => 'time_report_grid')
+#      
+#    
+#  end
   
 
   
