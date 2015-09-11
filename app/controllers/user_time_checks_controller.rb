@@ -379,7 +379,6 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
     else
       @checked_today_hours = Time.new(Time.now.year) + checked_today.time_spent 
     end
- 
     
     @time_spent_today = TimeEntry.where(['user_id = ? and created_on >= CURDATE()', User.current.id]).sum(:hours)
     if @time_spent_today.nil? then
