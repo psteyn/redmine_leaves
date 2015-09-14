@@ -205,7 +205,8 @@ and month(#{TimeEntry.table_name}.spent_on)=?
   def user_time_reporting
     #By default show all for Today, else whatever was given in filter.
     if params["time_checks_grid"].nil?
-      time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as user_id").where("date(check_in_time) = date(CURDATE())").includes(:user).group('user_id')
+      #time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as user_id").where("date(check_in_time) >= date(CURDATE())").includes(:user).group('user_id')
+      time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,min(check_in_time) as check_in_time,max(check_out_time) as check_out_time,user_id as user_id").where("check_out_time >= CURDATE()").includes(:user).group('user_id')
     else
       time_checks = UserTimeCheck.select("sum(time_spent) as time_spent,user_id, min(check_in_time) as check_in_time,max(check_out_time) as check_out_time").includes(:user).group('user_id').where("check_out_time IS NOT NULL")
     end
