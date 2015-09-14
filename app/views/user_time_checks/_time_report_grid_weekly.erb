@@ -27,8 +27,10 @@
 
   e.column name: 'Total Time Checked', html: {style: 'text-align: center'}   do |t|
     unless t.time_spent.nil?
-      time_spent_date = Time.new(Time.now.year) + t.time_spent
-      time_spent_date.strftime("%H:%M:%S")
+      hours = t.time_spent / 60.0 / 60.0
+      hours.round(1)
+      #time_spent_date = Time.new(Time.now.year) + t.time_spent
+      #time_spent_date.strftime("%H:%M:%S")
     end
   end
   
