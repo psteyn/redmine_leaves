@@ -23,9 +23,13 @@
     detach_with_id: 'check_out_time_filter'
 
   e.column name: 'Time Checked', html: {style: 'text-align: center'}   do |t|
+   logger.debug("\nMOO: #{params.inspect}\n")
+   logger.debug("\nTIMESPENT: #{t.time_spent}\n")
     unless t.time_spent.nil?
-      time_spent_date = Time.new(Time.now.year) + t.time_spent
-      time_spent_date.strftime("%H:%M:%S") 
+      #time_spent_date = Time.new(Time.now.year) + t.time_spent
+      #time_spent_date.strftime("%H:%M:%S") 
+      @time_checked_today = t.time_spent / 60.0 / 60.0
+      @time_checked_today.round(2)
     end
   end
   
@@ -39,10 +43,8 @@
   end
 
   @time_spent_today = TimeEntry.where(['user_id = ? and created_on between ? and ?', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
-   logger.debug("\nMOO: #{params.inspect}\n")
-   logger.debug("\nMOO: #{@time_spent_today}\n")
     unless t.time_spent.nil?
-      #time_spent_date = Time.new(Time.now.year) +  @time_spent_today * 60 * 60
+      #time_spent_date = Time.new(Time.now.year) +  @time_spent_today * 60.0 * 60.0
       @time_spent_today.round(2)
       #time_spent_date.strftime("%H:%M:%S") 
     end

@@ -244,6 +244,7 @@ check_out_time ,user_id,
       conditions: ["check_in_time >  ?", Time.now - 6.months],
       :enable_export_to_csv => true,
       :csv_field_separator => ';',
+      :order_direction => 'desc',
       :per_page => 100,
       :csv_file_name => 'UserTimeWeekly')#,
      
