@@ -4,8 +4,6 @@
 
   e.column name: 'Week #  ', html: {style: 'text-align: center'} do |t|
     t.week
-    #  time=Time.at(t.week)
-  # time.strftime("%W") 
     end
   e.column name: 'Week Start Date', html: {style: 'text-align: center'} do |t|
 
@@ -29,15 +27,11 @@
     unless t.time_spent.nil?
       hours = t.time_spent / 60.0 / 60.0
       hours.round(1)
-      #time_spent_date = Time.new(Time.now.year) + t.time_spent
-      #time_spent_date.strftime("%H:%M:%S")
     end
   end
   
   e.column name: 'Total Time Logged', html: {style: 'text-align: center'}   do |t|
-    #select sum(hours) from time_entries where user_id = 164 and date(created_on) between date('2015-09-01') and date('2015-09-11') 
     @time_spent_this_week = TimeEntry.where(['user_id = ? and created_on between date(?) and date(?)', t.user_id,Time.at(t.weekdays.beginning_of_week),Time.at(t.weekdays.end_of_week)]).sum(:hours)
-     logger.debug("\nMOO: #{@time_spent_this_week.inspect}\n")
     unless t.time_spent.nil?
       @time_spent_this_week.round(2)
     end
