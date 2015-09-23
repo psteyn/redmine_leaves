@@ -23,11 +23,13 @@
     detach_with_id: 'check_out_time_filter'
 
   e.column name: 'Time Checked', html: {style: 'text-align: center'}   do |t|
-   logger.debug("\nMOO: #{params.inspect}\n")
-   logger.debug("\nTIMESPENT: #{t.time_spent}\n")
-    unless t.time_spent.nil?
-      #time_spent_date = Time.new(Time.now.year) + t.time_spent
-      #time_spent_date.strftime("%H:%M:%S") 
+    #Log seconds since check in, if user has not checked out yet.
+    logger.debug("CHECKIN_TIME: #{t.check_in_time}")
+    if t.time_spent.nil?
+      seconds = Time.now.to_i - t.check_in_time.to_i
+      @time_spent_date = Time.new(Time.now.year) + seconds
+      @time_spent_date.strftime("%H:%M:%S") 
+    else
       @time_checked_today = t.time_spent / 60.0 / 60.0
       @time_checked_today.round(2)
     end
@@ -42,12 +44,12 @@
     @time_spent_today = TimeEntry.where(['user_id = ? and created_on between ? and ?', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
   end
 
-  @time_spent_today = TimeEntry.where(['user_id = ? and created_on between ? and ?', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
-    unless t.time_spent.nil?
+  #@time_spent_today = TimeEntry.where(['user_id = ? and created_on between ? and ?', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
+    #unless t.time_spent.nil?
       #time_spent_date = Time.new(Time.now.year) +  @time_spent_today * 60.0 * 60.0
       @time_spent_today.round(2)
       #time_spent_date.strftime("%H:%M:%S") 
-    end
+    #end
   end
 
 end %>
