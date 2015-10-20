@@ -39,12 +39,12 @@
 
   if params["time_checks_grid"].nil?
     #@time_spent_today = TimeEntry.where(['user_id = ? and date(created_on) = date(CURDATE())', t.user_id]).sum(:hours)
-    @time_spent_today = TimeEntry.where(['user_id = ? and created_on >= CURDATE()', t.user_id]).sum(:hours)
+    @time_spent_today = TimeEntry.where(['user_id = ? and spent_on >= date(CURDATE())', t.user_id]).sum(:hours)
   else
-    @time_spent_today = TimeEntry.where(['user_id = ? and created_on between ? and ?', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
+    @time_spent_today = TimeEntry.where(['user_id = ? and spent_on between date(?) and date(?)', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
   end
 
-  #@time_spent_today = TimeEntry.where(['user_id = ? and created_on between ? and ?', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
+  #@time_spent_today = TimeEntry.where(['user_id = ? and spent_on between date(?) and date(?)', t.user_id,t.check_in_time,t.check_out_time]).sum(:hours)
     #unless t.time_spent.nil?
       #time_spent_date = Time.new(Time.now.year) +  @time_spent_today * 60.0 * 60.0
       @time_spent_today.round(2)

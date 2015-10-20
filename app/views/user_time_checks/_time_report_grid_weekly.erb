@@ -31,7 +31,7 @@
   end
   
   e.column name: 'Total Time Logged', html: {style: 'text-align: center'}   do |t|
-    @time_spent_this_week = TimeEntry.where(['user_id = ? and created_on between date(?) and date(?)', t.user_id,Time.at(t.weekdays.beginning_of_week),Time.at(t.weekdays.end_of_week)]).sum(:hours)
+    @time_spent_this_week = TimeEntry.where(['user_id = ? and spent_on between date(?) and date(?)', t.user_id,Time.at(t.weekdays.beginning_of_week),Time.at(t.weekdays.end_of_week)]).sum(:hours)
     unless t.time_spent.nil?
       @time_spent_this_week.round(2)
     end

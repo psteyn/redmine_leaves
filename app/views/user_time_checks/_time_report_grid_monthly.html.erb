@@ -24,7 +24,7 @@
 
   e.column name: 'Total Time Logged', html: {style: 'text-align: center'}   do |t|
     
-    @time_spent_this_month = TimeEntry.where(['user_id = ? and created_on between date(?) and date(?)', t.user_id,Date.today.beginning_of_month,Date.today.end_of_month]).sum(:hours)
+    @time_spent_this_month = TimeEntry.where(['user_id = ? and spent_on between date(?) and date(?)', t.user_id,Date.today.beginning_of_month,Date.today.end_of_month]).sum(:hours)
       logger.debug("TIMELOGGEDMONTH: #{@time_spent_this_month.inspect}")
     unless @time_spent_this_month.nil?
       @time_spent_this_month.round(2)
