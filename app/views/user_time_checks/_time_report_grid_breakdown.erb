@@ -1,0 +1,28 @@
+
+<%=define_grid @time_report_grid_breakdown, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true do |e|
+
+
+  e.column name: l(:field_user_id), html: {style: 'text-align: center'}, 
+    :attribute => 'user_id',
+    detach_with_id: 'user_filter' ,
+    custom_filter: User.active.collect{|u|[u.name, u.id]}  do |t|
+    t.user.name unless t.user.nil? 
+    end
+
+
+  e.column name: 'Total Time Checked', html: {style: 'text-align: center'}   do |t|
+    unless t.time_spent.nil?
+      hours = t.time_spent / 60.0 / 60.0
+      hours.round(1)
+    end
+  end
+  
+  e.column name: 'Total Time Logged', html: {style: 'text-align: center'}   do |t|
+    logger.debug("t inspected: #{t.inspect}")
+    @time_spent_this_week = TimeEntry.where(['user_id = ? and spent_on between date(?) and date(?)', t.user_id,Time.at(t.check_in_time),Time.at(t.check_out_time)]).sum(:hours)
+    unless t.time_spent.nil?
+      @time_spent_this_week.round(2)
+    end
+  end
+  
+  end %>
