@@ -253,7 +253,26 @@ check_out_time ,user_id,
         
    
   end
+
+  def user_time_reporting_breakdown
+    logger.debug("\nPARAMS: #{params.inspect}\n")
+    time_checks = UserTimeCheck.select("time_spent,check_in_time,check_out_time,week(check_in_time) as week,user_id as user_id").where("date(check_in_time) between date(\"#{params['week_start']}\") and date(\"#{params['week_end']}\") and user_id = #{params['user_id']}")
+
+    logger.debug("\nBREAKDOWN_RESULTS: #{time_checks.inspect}\n")
+
+    @time_report_grid_breakdown = initialize_grid(time_checks,
+      :name => 'time_checks_grid',
+      conditions: ["check_in_time >  ?", Time.now - 6.months],
+      :enable_export_to_csv => true,
+      :order_direction => 'desc',
+      :csv_field_separator => ';',
+      :per_page => 100,
+      :csv_file_name => 'UserTimeWeekly')#,
+    
+    export_grid_if_requested('time_checks_grid' => 'time_report_grid_breakdown')
   
+
+  end
    
    
   def user_time_reporting_monthly

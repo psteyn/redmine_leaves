@@ -3,7 +3,7 @@
 
 
   e.column name: 'Week #  ', html: {style: 'text-align: center'} do |t|
-    t.week
+    link_to t.week, "/user_time_checks/user_time_reporting_breakdown?" +  {week_start: Time.at(t.weekdays.beginning_of_week).strftime("%F"), week_end: Time.at(t.weekdays.end_of_week).strftime("%F"), user_id: t.user_id}.to_param
     end
   e.column name: 'Week Start Date', html: {style: 'text-align: center'} do |t|
 
