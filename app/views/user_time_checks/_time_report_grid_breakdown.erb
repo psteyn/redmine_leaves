@@ -10,19 +10,34 @@
     end
 
 
-  e.column name: 'Total Time Checked', html: {style: 'text-align: center'}   do |t|
-    unless t.time_spent.nil?
-      hours = t.time_spent / 60.0 / 60.0
-      hours.round(1)
+  e.column name: 'Check in Time', html: {style: 'text-align: center'}   do |t|
+    unless t.check_in_time.nil?
+      t.check_in_time
     end
   end
   
-  e.column name: 'Total Time Logged', html: {style: 'text-align: center'}   do |t|
-    logger.debug("t inspected: #{t.inspect}")
-    @time_spent_this_week = TimeEntry.where(['user_id = ? and spent_on between date(?) and date(?)', t.user_id,Time.at(t.check_in_time),Time.at(t.check_out_time)]).sum(:hours)
-    unless t.time_spent.nil?
-      @time_spent_this_week.round(2)
+  e.column name: 'Check out Time', html: {style: 'text-align: center'}   do |t|
+    unless t.check_out_time.nil?
+      t.check_out_time
     end
+  end
+  
+ e.column name: 'Time Checked', html: {style: 'text-align: center'}   do |t|
+   if t.time_spent.nil?
+      seconds = Time.now.to_i - t.check_in_time.to_i
+      @time_spent_date = Time.new(Time.now.year) + seconds
+      @time_spent_date.strftime("%H:%M:%S") 
+    else
+      @time_checked_today = t.time_spent / 60.0 / 60.0
+      @time_checked_today.round(2)
+    end
+  end
+  
+e.column name: 'Time Logged', html: {style: 'text-align: center'}   do |t|
+    logger.debug("t inspected: #{t.inspect}")
+      @time_spent_this_period = TimeEntry.where(['user_id = ? and spent_on = date(?)', t.user_id,Time.at(t.check_in_time)]).sum(:hours)
+   
+      @time_spent_this_period.round(2)
   end
   
   end %>

@@ -244,7 +244,7 @@ check_out_time ,user_id,
       :enable_export_to_csv => true,
       :order_direction => 'desc',
       :csv_field_separator => ';',
-      :per_page => 100,
+      :per_page => 1000,
       :csv_file_name => 'UserTimeWeekly')#,
      
     export_grid_if_requested('time_checks_grid' => 'time_report_grid_weekly')
