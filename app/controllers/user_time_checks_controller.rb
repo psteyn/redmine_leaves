@@ -228,14 +228,14 @@ and month(#{TimeEntry.table_name}.spent_on)=?
   def user_time_reporting_weekly
   
 
-    time_checks = UserTimeCheck.select("check_in_time as weekdays,week(check_in_time) as week,year(check_in_time) as year,check_in_time,
+    time_checks = UserTimeCheck.select("check_in_time as weekdays,week(check_in_time,1) as week,year(check_in_time) as year,check_in_time,
 check_out_time ,user_id,
  AVG(check_in_time) as avg_check_in_time,
  AVG(check_out_time) as avg_check_out_time, 
  sum(time_spent) as time_spent,avg(time_spent) as average_time").
       includes(:user).
-      group('user_id,year(check_in_time),week(check_in_time)').        
-      order('year(check_in_time),week(check_in_time)')#.includes(:user)
+      group('user_id,year(check_in_time),week(check_in_time,1)').        
+      order('year(check_in_time),week(check_in_time,1)')#.includes(:user)
     logger.debug("\nNEWWEEK: #{time_checks.inspect}\n")
       
     @time_report_grid_weekly = initialize_grid(time_checks,
