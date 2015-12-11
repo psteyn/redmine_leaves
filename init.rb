@@ -28,7 +28,8 @@ Redmine::Plugin.register :redmine_leaves do
       caption: :caption_top_menu_check_out, if: Proc.new {UserTimeCheck.checked_in?(User.current.id)}, last: true
   
   
-      menu :top_menu, :user_time_checks, { controller: 'user_time_checks', action: 'index' }, caption: :caption_user_time_check
+      menu :top_menu, :my_time, { controller: 'user_time_checks', action: 'my_time' }, caption: "My Time"
+
       
       menu :top_menu, :user_time_reporting, { controller: 'user_time_checks', action: 'user_time_reporting' }, :caption => 'User Time Reports'
       menu :user_time_report_menu, :user_time_report_custom, { :controller => 'user_time_checks', :action => 'user_time_reporting'}, :caption => 'Daily'
